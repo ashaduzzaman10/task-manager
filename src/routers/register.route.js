@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
+const uploadWithMulter = require("../middlewares/multer.middleware");
 
 const { registerUser } = require("../controllers/user/register.controller");
 const { loginUser } = require("../controllers/user/login.controller");
 
-const upload = multer({ dest: "uploads/" });
+const upload = uploadWithMulter.upload;
 
 router.post(
 	"/register",
