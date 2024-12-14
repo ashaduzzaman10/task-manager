@@ -1,4 +1,4 @@
-const { User } = require("../../models/user.model");
+const User = require("../../models/user.model");
 const { comparePassword } = require("../../utils/encrypt");
 
 const loginUser = async (req, res) => {
@@ -36,19 +36,32 @@ const loginUser = async (req, res) => {
 		});
 	}
 
-	// generate token for user
-	// const token = generateToken(user);
+	// generate access token and refresh token
 
-	return res.status(200).json({
-		data: {
-			success: true,
-			message: "User logged in successfully",
-			userInfo : {
-				user,
+	const accessToken = await user.generateAccessToken();
+	const refreshToken = await user.generateRefreshToken();
+	console.log(`Bearer ${accessToken}`);
+
+	const option = {
+		httpOnly: true,
+		secure: true,
+	};
+
+	return res
+		.status(200)
+		.cookie("accessToken", accessToken, option)
+		.cookie("refreshToken", refreshToken, option)
+		.json({
+			data: {
+				success: true,
+				message: "User logged in successfully",
+				userInfo: {
+					user,
+					accessToken,
+					refreshToken,
+				},
 			},
-			// token,
-		},
-	});
+		});
 };
 
 module.exports = {

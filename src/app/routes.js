@@ -5,7 +5,7 @@ const userRouter = require("../routers/register.route");
 
 //  custom routes
 
-Router.use("/api/v1", userRouter);
+Router.use("/api/v1/users", userRouter);
 
 //  health check
 Router.get("/health", (_req, res) => {

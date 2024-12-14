@@ -1,4 +1,4 @@
-const { User } = require("../../models/user.model");
+const User = require("../../models/user.model");
 const { uploadOnCloudinary } = require("../../utils/cloudinary");
 const { hashPassword } = require("../../utils/encrypt");
 
@@ -66,13 +66,27 @@ const registerUser = async (req, res) => {
 
 	try {
 		await newUser.save();
-		return res.status(201).json({
-			data: {
-				success: true,
-				message: "User registered successfully",
-				user: newUser,
-			},
-		});
+		const accessToken = await newUser.generateAccessToken();
+		const refreshToken = await newUser.generateRefreshToken();
+		const option = {
+			httpOnly: true,
+			secure: true,
+		};
+		return res
+			.status(201)
+			.cookie("accessToken", accessToken, option)
+			.cookie("refreshToken", refreshToken, option)
+			.json({
+				data: {
+					success: true,
+					message: "User registered successfully",
+					user: newUser,
+					tokens: {
+						accessToken,
+						refreshToken,
+					},
+				},
+			});
 	} catch (error) {
 		return res.status(500).json({
 			data: {

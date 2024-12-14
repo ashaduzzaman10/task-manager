@@ -6,6 +6,7 @@ const { registerUser } = require("../controllers/user/register.controller");
 const { loginUser } = require("../controllers/user/login.controller");
 
 const upload = uploadWithMulter.upload;
+//  register route 
 
 router.post(
 	"/register",
@@ -14,6 +15,8 @@ router.post(
 );
 
 // login user
-router.post("/login", loginUser);
+router.post( "/login", loginUser );
+
+
 
 module.exports = router;
