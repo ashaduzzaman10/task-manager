@@ -2,6 +2,7 @@ const Router = require("express").Router();
 const creteTask = require("../controllers/task/createTask");
 const findAllTask = require("../controllers/task/findAlltask");
 const findTaskById = require("../controllers/task/findTaskById");
+const updateTaskById = require("../controllers/task/updateTaskById");
 const verifyUser = require("../middlewares/auth.middleware");
 const { Task } = require("../models/Task.model");
 const mongoose = require("mongoose");
@@ -17,9 +18,7 @@ Router.get("/", findAllTask);
 Router.get("/:id", findTaskById);
 
 // update task by id
-Router.put("/:id", (req, res) => {
-	res.send("update task by id");
-});
+Router.put("/:id", updateTaskById);
 
 // delete task by id
 Router.delete("/:id", (req, res) => {
