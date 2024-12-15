@@ -1,10 +1,12 @@
 const Router = require("express").Router();
+const creteTask = require( "../controllers/task/createTask" );
+const verifyUser = require("../middlewares/auth.middleware");
+const { Task } = require("../models/Task.model");
+const mongoose = require("mongoose");
 
-// create new task task
+Router.use(verifyUser);
 
-Router.post("/", (req, res) => {
-	res.send("create task");
-});
+Router.post("/", creteTask);
 
 // get all task
 Router.get("/", (req, res) => {
