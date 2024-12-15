@@ -46,7 +46,7 @@ const loginUser = async (req, res) => {
 			user: {
 				id: user._id,
 				email: user.email,
-				// add other user details if needed
+				userData: user,
 			},
 		},
 	});

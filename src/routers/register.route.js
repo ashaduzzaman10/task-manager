@@ -1,50 +1,56 @@
 const express = require("express");
 const router = express.Router();
-const uploadWithMulter = require("../middlewares/multer.middleware");
+const { upload } = require("../middlewares/multer.middleware");
 const verifyUser = require("../middlewares/auth.middleware");
 const registerUser = require("../controllers/user/register.controller");
 const loginUser = require("../controllers/user/login.controller");
 const logoutController = require("../controllers/user/logout.controller");
 const profileInfo = require("../controllers/user/profile.controller");
+const updateProfile = require("../controllers/user/updateProfile");
+const deleteProfile = require("../controllers/user/deleteProfile");
+const updateProfilePhoto = require("../controllers/user/updateProfilePhoto");
 
-const upload = uploadWithMulter.upload;
+// Async  wrapper
 
-// Register route
+const asyncHandler = (fn) => (req, res, next) => {
+	Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Public routes
 router.post(
 	"/register",
 	upload.fields([{ name: "profilePicture", maxCount: 1 }]),
-	registerUser
+	asyncHandler(registerUser)
 );
 
-// Login user
-router.post("/login", loginUser);
+router.post("/login", asyncHandler(loginUser));
 
-// Logout user
-router.post("/logout", logoutController);
+// Protected routes
+router.use(verifyUser);
 
-// Profile route
-router.get("/me", profileInfo);
+// Logout route
 
-// Update profile route
-router.put("/me", (req, res) => {
-	res.send("update me");
-});
+router.post("/logout", asyncHandler(logoutController));
 
-// Update profile picture route
-router.put("/me/profile-picture", (req, res) => {
-	res.send("update profile picture");
-});
+// User profile routes
 
-// Delete profile
-router.delete("/me", (req, res) => {
-	res.send("delete me");
-});
+router.get("/me", asyncHandler(profileInfo));
 
-// Test authentication route
-router.get("/test-auth", verifyUser, (req, res) => {
-	res
-		.status(200)
-		.json({ success: true, message: "Authenticated", user: req.user });
-});
+// Update user profile
+router.put(
+	"/me",
+	upload.fields([{ name: "profilePicture", maxCount: 1 }]),
+	asyncHandler(updateProfile)
+);
+
+// Update profile picture
+
+router.put(
+	"/me/profile-picture",
+	upload.single("profilePicture"),
+	asyncHandler(updateProfilePhoto)
+);
+
+router.delete("/me", asyncHandler(deleteProfile));
 
 module.exports = router;
