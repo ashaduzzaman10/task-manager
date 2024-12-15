@@ -16,8 +16,9 @@ const loginUser = async (req, res) => {
 
 	// check if user exists
 	const user = await User.findOne({ email });
+
 	if (!user) {
-		return res.status(400).json({
+		return res.status(404).json({
 			data: {
 				success: false,
 				message: "User not found",
@@ -25,45 +26,30 @@ const loginUser = async (req, res) => {
 		});
 	}
 
-	// check password
+	// check if password is correct
 	const isPasswordValid = await comparePassword(password, user.password);
+
 	if (!isPasswordValid) {
-		return res.status(400).json({
+		return res.status(401).json({
 			data: {
 				success: false,
-				message: "Invalid password",
+				message: "Invalid credentials",
 			},
 		});
 	}
 
-	// generate access token and refresh token
-
-	const accessToken = await user.generateAccessToken();
-	const refreshToken = await user.generateRefreshToken();
-	console.log(`Bearer ${accessToken}`);
-
-	const option = {
-		httpOnly: true,
-		secure: true,
-	};
-
-	return res
-		.status(200)
-		.cookie("accessToken", accessToken, option)
-		.cookie("refreshToken", refreshToken, option)
-		.json({
-			data: {
-				success: true,
-				message: "User logged in successfully",
-				userInfo: {
-					user,
-					accessToken,
-					refreshToken,
-				},
+	// user is logged in
+	return res.status(200).json({
+		data: {
+			success: true,
+			message: "User was logged in",
+			user: {
+				id: user._id,
+				email: user.email,
+				// add other user details if needed
 			},
-		});
+		},
+	});
 };
 
-module.exports = {
-	loginUser,
-};
+module.exports = loginUser;
