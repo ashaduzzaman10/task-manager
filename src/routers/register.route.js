@@ -4,6 +4,7 @@ const uploadWithMulter = require("../middlewares/multer.middleware");
 
 const { registerUser } = require("../controllers/user/register.controller");
 const { loginUser } = require("../controllers/user/login.controller");
+const { logoutController } = require( "../controllers/user/logout.controller" );
 
 const upload = uploadWithMulter.upload;
 //  register route
@@ -18,9 +19,7 @@ router.post(
 router.post("/login", loginUser);
 
 // logout user
-router.post("/logout", (req, res) => {
-	res.send("logout");
-});
+router.post("/logout", logoutController);
 
 // profile route
 router.get("/me", (req, res) => {
