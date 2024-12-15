@@ -1,5 +1,6 @@
 const Router = require("express").Router();
-const creteTask = require( "../controllers/task/createTask" );
+const creteTask = require("../controllers/task/createTask");
+const findAllTask = require("../controllers/task/findAlltask");
 const verifyUser = require("../middlewares/auth.middleware");
 const { Task } = require("../models/Task.model");
 const mongoose = require("mongoose");
@@ -9,9 +10,7 @@ Router.use(verifyUser);
 Router.post("/", creteTask);
 
 // get all task
-Router.get("/", (req, res) => {
-	res.send("get all task");
-});
+Router.get("/", findAllTask);
 
 // get task by id
 Router.get("/:id", (req, res) => {
